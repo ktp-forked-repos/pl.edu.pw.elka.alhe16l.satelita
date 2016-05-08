@@ -1,4 +1,4 @@
-source("FitnessFunction.R")
+source("R/FitnessFunction.R")
 
 ##ograniczenia na time angle velocity
 ##czas w sekundach ~3 lata, prędkość wyznaczona na oko

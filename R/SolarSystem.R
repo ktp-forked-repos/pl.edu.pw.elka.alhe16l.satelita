@@ -1,28 +1,47 @@
-##returns list o planets in start positions. each planet has following parametrs:
-##radius radius of the planet described in kilometers * 10^6
-##mass mass multipled by earths mass = 6.046 * 10^24kg
-##distance distance from sun in kilometers multiplied by 10^6
-##velocity velocity of the planet described in kilometers per second
-##but it isn't the real value of valeicty - for some reason it doesn't work
-##angle angle relative to sun, between 0 and and 2*PI
-##name name of the planet
-getPlanetsStart() <- function() {
-  planets <- c(
-    list(raiuds=69.5700, mass=330000, distance=0, velocity=0, angle=0, name="Sun"),
-    list(radius=2.440, mass=0.06, distance=57.149340, velocity=2500, angle=0.33 * PI, name="Mercury"),
-    list(radius=0.6052, mass=0.82, distance=108.939123, velocity=1865, angle=0.25 * PI, name="Venus"),
-    list(radius=0.6378, mass=1, distance=149.879224, velocity=1600, angle=1.5 * PI, name="Earth"),
-    list(radius=0.3396, mass=0.11, distance=227.339977, velocity=1279, angle=1.75 * PI, name="Mars"),
-    list(radius=7.1492, mass=317.8, distance=778.009880, velocity=697, angle=1.4 * PI, name="Jupiter"),
-    list(radius=6.0268, mass=95.2, distance=1426.283824, velocity=516, angle=1.66 * PI, name="Saturn"),
-    list(radius=2.5559, mass=14.6, distance=2870.745626, velocity=363, angle=0.8 * PI, name="Uranus"),
-    list(radius=2.4764, mass=17.2, distance=4498.350139, velocity=289, angle=0.4 * PI, name="Neptune")
-  )
-  return(planets)
-}
+solarSystem <- list(
+  ##returns list o planets in start positions. each planet has following parametrs:
+  ##radius radius of the planet described in kilometers * 10^6
+  ##mass mass multipled by earths mass = 6.046 * 10^24kg
+  ##distance distance from sun in kilometers multiplied by 10^6
+  ##velocity velocity of the planet described in kilometers per second
+  ##but it isn't the real value of valeicty - for some reason it doesn't work
+  ##angle angle relative to sun, between 0 and and 2*PI
+  ##name name of the planet
+  getPlanetsStart=function() {
+    getPlanet <- function(radius, mass, distance, velocity, angle, name) {
+      x <- distance * sin(angle);
+      y <- distance * cos(angle);
+      vx <- velocity * cos(angle);
+      vy <- velocity * -sin(angle);
+      return(list(radius=radius, mass=mass, x=x, y=y, vx=vx, vy=vy, name=name))
+    }
+    planets <- c(
+      getPlanet(69.5700, 330000, 0, 0, 0, "Sun"),
+      getPlanet(2.440, 0.06, 57.149340, 2500, 0.33 * PI, "Mercury"),
+      getPlanet(0.6052, 0.82, 108.939123, 1865, 0.25 * PI, "Venus"),
+      getPlanet(0.6378, 1, 149.879224, 1600, 1.5 * PI, "Earth"),
+      getPlanet(0.3396, 0.11, 227.339977, 1279, 1.75 * PI, "Mars"),
+      getPlanet(7.1492, 317.8, 778.009880, 697, 1.4 * PI, "Jupiter"),
+      getPlanet(6.0268, 95.2, 1426.283824, 516, 1.66 * PI, "Saturn"),
+      getPlanet(2.5559, 14.6, 2870.745626, 363, 0.8 * PI, "Uranus"),
+      getPlanet(2.4764, 17.2, 4498.350139, 289, 0.4 * PI, "Neptune")
+    )
+    return(planets)
+  },
 
-##time step in seconds used for calculating physical movement and forces between planets
-timeStep <- 10000
-
-##graivty constant described in m^3 / (kg * s^2)
-gravityConstant <- 6.67408
+  ##returns a rocket that starts on specified planet in current time
+  ##with specified velocity and angle
+  getRocket=function(startPlanet, velocity, angle) {
+    x <- (startPlanet$x + startPlanet$radius + 1) * cos(angle);
+    y <- (startPlanet$y + startPlanet$radius + 1) * sin(angle);
+    vx <- velocity * cos(angle);
+    vy <- velocity * sin(angle);
+    return(list(x=x, y=y, vx=vx, vy=vy))
+  },
+  ##constants
+  PI=3.14159265359,
+  ##time step in seconds used for calculating physical movement and forces between planets
+  timeStep=10000,
+  ##graivty constant described in m^3 / (kg * s^2)
+  gravityConstant=6.67408
+)
