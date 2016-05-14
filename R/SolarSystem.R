@@ -15,7 +15,7 @@ solarSystem <- list(
       vy <- velocity * -sin(angle);
       return(list(radius=radius, mass=mass, x=x, y=y, vx=vx, vy=vy, name=name))
     }
-    planets <- c(
+    planets <- list(
       getPlanet(69.5700, 330000, 0, 0, 0, "Sun"),
       getPlanet(2.440, 0.06, 57.149340, 2500, 0.33 * PI, "Mercury"),
       getPlanet(0.6052, 0.82, 108.939123, 1865, 0.25 * PI, "Venus"),
@@ -32,16 +32,10 @@ solarSystem <- list(
   ##returns a rocket that starts on specified planet in current time
   ##with specified velocity and angle
   getRocket=function(startPlanet, velocity, angle) {
-    x <- (startPlanet$x + startPlanet$radius + 1) * cos(angle);
-    y <- (startPlanet$y + startPlanet$radius + 1) * sin(angle);
+    x <- (startPlanet$x + startPlanet$radius) * cos(angle);
+    y <- (startPlanet$y + startPlanet$radius) * sin(angle);
     vx <- velocity * cos(angle);
     vy <- velocity * sin(angle);
-    return(list(x=x, y=y, vx=vx, vy=vy))
-  },
-  ##constants
-  PI=3.14159265359,
-  ##time step in seconds used for calculating physical movement and forces between planets
-  timeStep=10000,
-  ##graivty constant described in m^3 / (kg * s^2)
-  gravityConstant=6.67408
+    return(list(mass=1.0e-18,x=x, y=y, vx=vx, vy=vy, name=""))
+  }
 )
