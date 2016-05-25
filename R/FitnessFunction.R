@@ -1,7 +1,8 @@
 source("R/SolarSystem.R")
+source("R/Tests.R")
 
 ## Fitness Function
-##first parameter is time in seconds after which simulation shuld start
+##first parameter is time in seconds after which simulation should start
 ##second parameter is angle of the shot between 0 and @ * PI
 ##velocity in km / s
 fitnessFunction <- function(x) {
@@ -22,6 +23,8 @@ fitnessFunction <- function(x) {
   rocket <- solarSystem$getRocket(startPlanet, velocity, angle)
   planets <- c(planets, list(rocket))
 
+  drawIndex <- 0
+
   while(1) {
     ##get source, destination planets and sun
     endPlanet <- planets[[endPlanetIndex]]
@@ -31,7 +34,15 @@ fitnessFunction <- function(x) {
     ##calculate distance between end planet and sun
     dist <- getDistance(rocket, endPlanet)
     solarDist <- getDistance(rocket, sun)
-
+    ##returns a rocket that starts on specified planet in current time
+    ##with specified velocity and angle
+    getRocket=function(startPlanet, velocity, angle) {
+      x <- (startPlanet$x + startPlanet$radius) * cos(angle);
+      y <- (startPlanet$y + startPlanet$radius) * sin(angle);
+      vx <- velocity * cos(angle);
+      vy <- velocity * sin(angle);
+      return(list(mass=1.0e-18,x=x, y=y, vx=vx, vy=vy, name=""))
+    }
     if(solarDist > 10000 || dist <= endPlanet$radius) {
       ##we have found solution or we are to far from the sun to find better
       break
@@ -40,6 +51,13 @@ fitnessFunction <- function(x) {
     ##simulation steps
     planets <- moveSimulation(timeStep, planets)
     dist <- min(dist, getDistance(rocket, endPlanet))
+    if(drawIndex==0){
+      drawIndex<-10
+      drawPlantesPositions(planets)
+    }
+    else{
+      drawIndex<-drawIndex-1
+    }
   }
 
   return(dist)
