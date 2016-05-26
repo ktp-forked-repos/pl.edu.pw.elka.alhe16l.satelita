@@ -1,9 +1,9 @@
 source("R/FitnessFunction.R")
 
 ##ograniczenia na time angle velocity
-##czas w sekundach ~3 lata, prędkość wyznaczona na oko
-lower <- c(0, 0, 0);
-upper <- c(100000000, 2 * PI, 5000)
+##czas w sekundach 1 rok, prędkość wyznaczona na oko
+lower <- c(0, 0, 2000);
+upper <- c(30000000, 2 * PI, 5000)
 
 set.seed(1234)
 # outDEoptim <- DEoptim(fitnessFunction, lower, upper)

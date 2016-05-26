@@ -32,8 +32,8 @@ solarSystem <- list(
   ##returns a rocket that starts on specified planet in current time
   ##with specified velocity and angle
   getRocket=function(startPlanet, velocity, angle) {
-    x <- (startPlanet$x + startPlanet$radius) * cos(angle);
-    y <- (startPlanet$y + startPlanet$radius) * sin(angle);
+    x <- startPlanet$x + (startPlanet$radius * cos(angle));
+    y <- startPlanet$y + (startPlanet$radius * sin(angle));
     vx <- velocity * cos(angle);
     vy <- velocity * sin(angle);
     return(list(mass=1.0e-18,x=x, y=y, vx=vx, vy=vy, name=""))

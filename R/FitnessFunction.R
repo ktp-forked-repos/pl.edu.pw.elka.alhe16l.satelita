@@ -3,26 +3,27 @@ source("R/Tests.R")
 
 ## Fitness Function
 ##first parameter is time in seconds after which simulation should start
-##second parameter is angle of the shot between 0 and @ * PI
+##second parameter is angle of the shot between 0 and 2 * PI
 ##velocity in km / s
 fitnessFunction <- function(x) {
   time <- x[[1]]
   angle <- x[[2]]
   velocity <- x[[3]]
   startPlanetIndex <- 4
-  endPlanetIndex <- 6
+  endPlanetIndex <- 9
   rocketIndex <- 10
   sunIndex <- 1
 
   ##get planets and move simulation according to current time
   planets <- solarSystem$getPlanetsStart()
-  moveSimulation(time, planets)
+  planets <- moveSimulation(time, planets)
 
   ##launch rocket. add rocket as a new object into solar system
   startPlanet <- planets[[startPlanetIndex]]
   rocket <- solarSystem$getRocket(startPlanet, velocity, angle)
   planets <- c(planets, list(rocket))
 
+  ##time untill next planets position draw
   drawIndex <- 0
 
   while(1) {
@@ -34,30 +35,23 @@ fitnessFunction <- function(x) {
     ##calculate distance between end planet and sun
     dist <- getDistance(rocket, endPlanet)
     solarDist <- getDistance(rocket, sun)
-    ##returns a rocket that starts on specified planet in current time
-    ##with specified velocity and angle
-    getRocket=function(startPlanet, velocity, angle) {
-      x <- (startPlanet$x + startPlanet$radius) * cos(angle);
-      y <- (startPlanet$y + startPlanet$radius) * sin(angle);
-      vx <- velocity * cos(angle);
-      vy <- velocity * sin(angle);
-      return(list(mass=1.0e-18,x=x, y=y, vx=vx, vy=vy, name=""))
-    }
-    if(solarDist > 10000 || dist <= endPlanet$radius) {
-      ##we have found solution or we are to far from the sun to find better
+    if(solarDist > 5000 || dist <= endPlanet$radius || time > 30000000) {
+      ##we have found solution or we are to far from the sun to find better or 1 year passed
       break
     }
 
-    ##simulation steps
-    planets <- moveSimulation(timeStep, planets)
-    dist <- min(dist, getDistance(rocket, endPlanet))
     if(drawIndex==0){
-      drawIndex<-10
+      drawIndex<-20
       drawPlantesPositions(planets)
     }
     else{
       drawIndex<-drawIndex-1
     }
+
+    ##simulation steps
+    planets <- moveSimulation(timeStep, planets)
+    time <- time+timeStep
+    dist <- min(dist, getDistance(rocket, endPlanet))
   }
 
   return(dist)
@@ -119,6 +113,6 @@ getAngleBetween <- function(planet1, planet2)
 ##constants
 PI <- 3.14159265359
 ##time step in seconds used for calculating physical movement and forces between planets
-timeStep <- 1000
+timeStep <- 5000
 ##graivty constant described in m^3 / (kg * s^2)
 gravityConstant <- 6.67408
