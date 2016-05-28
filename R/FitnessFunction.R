@@ -25,6 +25,8 @@ fitnessFunction <- function(x) {
 
   ##time untill next planets position draw
   drawIndex <- 0
+  ## flag - drawing planet position
+  drawPlanetFlag <- FALSE
 
   while(1) {
     ##get source, destination planets and sun
@@ -40,12 +42,14 @@ fitnessFunction <- function(x) {
       break
     }
 
-    if(drawIndex==0){
-      drawIndex<-20
-      drawPlantesPositions(planets)
-    }
-    else{
-      drawIndex<-drawIndex-1
+    if(drawPlanetFlag){
+        if(drawIndex==0){
+         drawIndex<-20
+         drawPlantesPositions(planets)
+        }
+        else{
+          drawIndex<-drawIndex-1
+        }
     }
 
     ##simulation steps

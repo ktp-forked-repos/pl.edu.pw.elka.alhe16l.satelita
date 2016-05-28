@@ -5,12 +5,8 @@ source("R/FitnessFunction.R")
 lower <- c(0, 0, 2000);
 upper <- c(30000000, 2 * PI, 5000)
 
-set.seed(1234)
-# outDEoptim <- DEoptim(fitnessFunction, lower, upper)
-#
-#
-#
-#
+
+
 #
 # ##poniżej jakieś wykresy które były w pliku tutoriala z heurystyki DEoptim
 #
