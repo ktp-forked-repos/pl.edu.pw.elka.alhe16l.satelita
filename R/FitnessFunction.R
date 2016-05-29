@@ -19,9 +19,12 @@ fitnessFunction <- function(x) {
   planets <- moveSimulation(time, planets)
 
   ##launch rocket. add rocket as a new object into solar system
+  endPlanet <- planets[[endPlanetIndex]]
   startPlanet <- planets[[startPlanetIndex]]
   rocket <- solarSystem$getRocket(startPlanet, velocity, angle)
   planets <- c(planets, list(rocket))
+  ##calculate distance between end planet and rocket
+  dist <- getDistance(rocket, endPlanet)
 
   ##time untill next planets position draw
   drawIndex <- 0
@@ -34,8 +37,10 @@ fitnessFunction <- function(x) {
     sun <- planets[[sunIndex]]
     rocket <- planets[[rocketIndex]]
 
-    ##calculate distance between end planet and sun
-    dist <- getDistance(rocket, endPlanet)
+    ##calculate distance between end planet and rocket
+    currDist <- getDistance(rocket, endPlanet)
+    dist <- min(dist, currDist)
+    ##calculate distance between sun and rocket
     solarDist <- getDistance(rocket, sun)
     if(solarDist > 5000 || dist <= endPlanet$radius || time > 30000000) {
       ##we have found solution or we are to far from the sun to find better or 1 year passed
@@ -43,19 +48,18 @@ fitnessFunction <- function(x) {
     }
 
     if(drawPlanetFlag){
-        if(drawIndex==0){
-         drawIndex<-20
-         drawPlantesPositions(planets)
-        }
-        else{
-          drawIndex<-drawIndex-1
-        }
+      if(drawIndex==0){
+        drawIndex<-20
+        drawPlantesPositions(planets)
+      }
+      else{
+        drawIndex<-drawIndex-1
+      }
     }
 
     ##simulation steps
     planets <- moveSimulation(timeStep, planets)
     time <- time+timeStep
-    dist <- min(dist, getDistance(rocket, endPlanet))
   }
 
   return(dist)
@@ -120,3 +124,7 @@ PI <- 3.14159265359
 timeStep <- 5000
 ##graivty constant described in m^3 / (kg * s^2)
 gravityConstant <- 6.67408
+
+
+
+
