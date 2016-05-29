@@ -39,3 +39,6 @@ solarSystem <- list(
     return(list(mass=1.0e-18,x=x, y=y, vx=vx, vy=vy, name=""))
   }
 )
+
+##constants
+PI <- 3.14159265359

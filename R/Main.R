@@ -1,9 +1,9 @@
 source("R/FitnessFunction.R")
 
 ##ograniczenia na time angle velocity
-##czas w sekundach 1 rok, prędkość wyznaczona na oko
-lower <- c(0, 0, 2000);
-upper <- c(10000000, 2 * PI, 5000)
+##czas w dniach, prędkość wyznaczona na oko
+lower <- c(1, 0, 2000);
+upper <- c(daysMax, 2 * PI, 5000)
 
 
 main=function() {

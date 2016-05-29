@@ -2,11 +2,12 @@ source("R/SolarSystem.R")
 source("R/Tests.R")
 
 ## Fitness Function
-##first parameter is time in seconds after which simulation should start
+##first parameter is time in days after which simulation should start
 ##second parameter is angle of the shot between 0 and 2 * PI
 ##velocity in km / s
+##requires 'planetsPerDay' list in global scope which contains planets state per day
 fitnessFunction <- function(x) {
-  time <- x[[1]]
+  day <- x[[1]]
   angle <- x[[2]]
   velocity <- x[[3]]
   startPlanetIndex <- 4
@@ -14,42 +15,30 @@ fitnessFunction <- function(x) {
   rocketIndex <- 10
   sunIndex <- 1
 
-  ##get planets and move simulation according to current time
-  planets <- solarSystem$getPlanetsStart()
-  planets <- moveSimulation(time, planets)
+  ##get planets for current day
+  planets <- planetsPerDay[[day]]
 
   ##launch rocket. add rocket as a new object into solar system
   endPlanet <- planets[[endPlanetIndex]]
   startPlanet <- planets[[startPlanetIndex]]
+  sun <- planets[[sunIndex]]
   rocket <- solarSystem$getRocket(startPlanet, velocity, angle)
   planets <- c(planets, list(rocket))
   ##calculate distance between end planet and rocket
   dist <- getDistance(rocket, endPlanet)
+  solarDist <- getDistance(rocket, sun)
 
-  ##time untill next planets position draw
+  ##iterations untill next planets position draw
   drawIndex <- 0
   ## flag - drawing planet position
-  drawPlanetFlag <- FALSE
+  drawPlanetFlag <- TRUE
 
-  while(1) {
-    ##get source, destination planets and sun
-    endPlanet <- planets[[endPlanetIndex]]
-    sun <- planets[[sunIndex]]
-    rocket <- planets[[rocketIndex]]
-
-    ##calculate distance between end planet and rocket
-    currDist <- getDistance(rocket, endPlanet)
-    dist <- min(dist, currDist)
-    ##calculate distance between sun and rocket
-    solarDist <- getDistance(rocket, sun)
-    if(solarDist > 5000 || dist <= endPlanet$radius || time > 30000000) {
-      ##we have found solution or we are to far from the sun to find better or 1 year passed
-      break
-    }
-
+  secondsToRun <- (daysMax - day) * secondsPerDay
+  ##until we are still in solar system and we haven't reached endplanet and time hasn't run off
+  while(solarDist < solarDistMax && dist > endPlanet$radius && secondsToRun > 0) {
     if(drawPlanetFlag){
       if(drawIndex==0){
-        drawIndex<-20
+        drawIndex<-3
         drawPlantesPositions(planets)
       }
       else{
@@ -59,7 +48,14 @@ fitnessFunction <- function(x) {
 
     ##simulation steps
     planets <- moveSimulation(timeStep, planets)
-    time <- time+timeStep
+    secondsToRun <- secondsToRun - timeStep
+
+    ##get source, destination planets and sun
+    endPlanet <- planets[[endPlanetIndex]]
+    sun <- planets[[sunIndex]]
+    rocket <- planets[[rocketIndex]]
+    dist <- min(dist, getDistance(rocket, endPlanet))
+    solarDist <- getDistance(rocket, sun)
   }
 
   return(dist)
@@ -103,6 +99,19 @@ moveSimulation <- function(s, allPlanets) {
   return(allPlanets)
 }
 
+
+##preprocessing - calculate planets positions per day for a year
+getPlanetsPerDay <- function(days) {
+  planets <- solarSystem$getPlanetsStart()
+  planetsPerDay <- list(planets)
+  while(days > 0) {
+    planets <- moveSimulation(secondsPerDay, planets)
+    planetsPerDay <- c(planetsPerDay, list(planets))
+    days <- days - 1
+  }
+  return(planetsPerDay)
+}
+
 ##returns distance between two planets in 10^6 km
 getDistance <- function(o1, o2) {
   x <- o1$x - o2$x
@@ -118,12 +127,19 @@ getAngleBetween <- function(planet1, planet2)
   return(atan2(x, y))
 }
 
-##constants
-PI <- 3.14159265359
+##number of seconds per day
+secondsPerDay <- 60*60*24;
 ##time step in seconds used for calculating physical movement and forces between planets
-timeStep <- 5000
+##should divie secondsPerDay - here it is one hour
+timeStep <- 60*60
 ##graivty constant described in m^3 / (kg * s^2)
 gravityConstant <- 6.67408
+##maximum acceptable distance from sun in km * 10^6
+solarDistMax <- 5000
+##maximum number of days for simulation
+daysMax <- 365
+##planets per each day
+planetsPerDay <- getPlanetsPerDay(daysMax)
 
 
 
