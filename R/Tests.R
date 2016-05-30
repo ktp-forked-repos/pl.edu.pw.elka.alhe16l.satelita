@@ -9,45 +9,76 @@ drawPlantesPositions=function(planets) {
   plot(PlanetsPositionsX,PlanetsPositionsY,type='p', ylim=c(-rangeOfAxis,rangeOfAxis), xlim=c(-rangeOfAxis,rangeOfAxis))
 }
 
+drawDiagrams=function(outDEoptim, sizeOfPopulation){
+  #best values of ff in each interation
+  dev.new()
+  plot(outDEoptim,plot.type="bestvalit")
+  #values of every objects in each interation
+  dev.new()
+  plot(outDEoptim,plot.type="storepop")
+  times<-list()
+  angles<-list()
+  velocities<-list()
+  for(i in 1:length(outDEoptim$member$storepop)) {
+    for(j in 1:sizeOfPopulation)
+    {
+      times <- append(times,outDEoptim$member$storepop[[i]][[j]])
+      angles <- append(angles,outDEoptim$member$storepop[[i]][[j+sizeOfPopulation]])
+      velocities <- append(velocities,outDEoptim$member$storepop[[i]][[j+(2*sizeOfPopulation)]])
+    }
+  }
+  dev.new()
+  scatterplot3d(times,angles,velocities, pch=19, color="steelblue", type="h")
+  summary(outDEoptim)
+  print("Srednia najlepszych wartosci")
+  print(mean(outDEoptim$member$bestvalit))
+  print("Odchylenie standardowe najlepszych wartosci")
+  print(sd(outDEoptim$member$bestvalit))
+}
+
 ## test of metaheuristic DEoptim
 testDEoptim=function()
 {
   tmp <- minNP
   while(tmp<=maxNP)
   {
-    resultsOfTests <- append(DEoptim(fitnessFunction, lower, upper, DEoptim.control(NP=tmp, CR=defaultCR, F=defaultF, maxIter= defaultIter, strategy=defaultStrategy)))
+    outDEoptim <- DEoptim(fitnessFunction, lower, upper, DEoptim.control(storepopfrom=0, NP=tmp, CR=defaultCR, F=defaultF, itermax= defaultIter, strategy=defaultStrategy))
+    drawDiagrams(outDEoptim, tmp)
     tmp<-tmp+stepNP
   }
   tmp<-minCR
   while(tmp<=maxCR)
   {
-    resultsOfTests <- append(DEoptim(fitnessFunction, lower, upper, DEoptim.control(NP=defaultNP, CR=tmp, F=defaultF, maxIter= defaultIter, strategy=defaultStrategy)))
+    outDEoptim <-DEoptim(fitnessFunction, lower, upper, DEoptim.control(storepopfrom=0, NP=defaultNP, CR=tmp, F=defaultF, itermax= defaultIter, strategy=defaultStrategy))
+    drawDiagrams(outDEoptim, defaultNP)
     tmp<-tmp+stepCR
   }
   tmp<-minF
   while(tmp<=maxF)
   {
-    resultsOfTests <- append(DEoptim(fitnessFunction, lower, upper, DEoptim.control(NP=defaultNP, CR=defaultCR, F=tmp, maxIter= defaultIter, strategy=defaultStrategy)))
+    outDEoptim <- DEoptim(fitnessFunction, lower, upper, DEoptim.control(storepopfrom=0, NP=defaultNP, CR=defaultCR, F=tmp, itermax= defaultIter, strategy=defaultStrategy))
+    drawDiagrams(outDEoptim, defaultNP)
     tmp<-tmp+stepF
   }
   tmp<-minIter
   while(tmp<=maxIter)
   {
-    resultsOfTests <- append(DEoptim(fitnessFunction, lower, upper, DEoptim.control(NP=defaultNP, CR=defaultCR, F=defaultF, maxIter= tmp, strategy=defaultStrategy)))
+    outDEoptim <- DEoptim(fitnessFunction, lower, upper, DEoptim.control(storepopfrom=0, NP=defaultNP, CR=defaultCR, F=defaultF, itermax= tmp, strategy=defaultStrategy))
+    drawDiagrams(outDEoptim, defaultNP)
     tmp<-tmp+stepIter
   }
   tmp<-minStrategy
   while(tmp<=maxStrategy)
   {
-    resultsOfTests <- append(DEoptim(fitnessFunction, lower, upper, DEoptim.control(NP=defaultNP, CR=defaultCR, F=defaultF, maxIter=defaultIter, strategy=tmp)))
+    outDEoptim <- DEoptim(fitnessFunction, lower, upper, DEoptim.control(storepopfrom=0, NP=defaultNP, CR=defaultCR, F=defaultF, itermax=defaultIter, strategy=tmp))
+    drawDiagrams(outDEoptim, defaultNP)
     tmp<-tmp+stepStrategy
   }
+
 }
 
 ## range of Axis (draw Planets Positions)
 rangeOfAxis <- 5000
-##
-resultsOfTests <- list()
 
 ## constants
 ## number of population members

@@ -31,7 +31,7 @@ fitnessFunction <- function(x) {
   ##iterations untill next planets position draw
   drawIndex <- 0
   ## flag - drawing planet position
-  drawPlanetFlag <- TRUE
+  drawPlanetFlag <- FALSE
 
   secondsToRun <- (daysMax - day) * secondsPerDay
   ##until we are still in solar system and we haven't reached endplanet and time hasn't run off
@@ -57,7 +57,8 @@ fitnessFunction <- function(x) {
     dist <- min(dist, getDistance(rocket, endPlanet))
     solarDist <- getDistance(rocket, sun)
   }
-
+  cat(dist)
+  cat("\n")
   return(dist)
 }
 
@@ -140,7 +141,3 @@ solarDistMax <- 5000
 daysMax <- 365
 ##planets per each day
 planetsPerDay <- getPlanetsPerDay(daysMax)
-
-
-
-
