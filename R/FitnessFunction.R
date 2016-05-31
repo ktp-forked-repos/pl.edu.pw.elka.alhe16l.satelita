@@ -57,8 +57,6 @@ fitnessFunction <- function(x) {
     dist <- min(dist, getDistance(rocket, endPlanet))
     solarDist <- getDistance(rocket, sun)
   }
-  cat(dist)
-  cat("\n")
   return(dist)
 }
 

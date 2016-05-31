@@ -36,16 +36,15 @@ drawDiagrams=function(outDEoptim, sizeOfPopulation){
   print(sd(outDEoptim$member$bestvalit))
 }
 
+test=function()
+{
+  tmp <- minNP
+  outDEoptim <- DEoptim(fitnessFunction, lower, upper, DEoptim.control(storepopfrom=0, NP=tmp, CR=defaultCR, F=defaultF, itermax= minIter, strategy=defaultStrategy))
+  drawDiagrams(outDEoptim, tmp)
+}
 ## test of metaheuristic DEoptim
 testDEoptim=function()
 {
-  tmp <- minNP
-  while(tmp<=maxNP)
-  {
-    outDEoptim <- DEoptim(fitnessFunction, lower, upper, DEoptim.control(storepopfrom=0, NP=tmp, CR=defaultCR, F=defaultF, itermax= defaultIter, strategy=defaultStrategy))
-    drawDiagrams(outDEoptim, tmp)
-    tmp<-tmp+stepNP
-  }
   tmp<-minCR
   while(tmp<=maxCR)
   {
@@ -82,28 +81,28 @@ rangeOfAxis <- 5000
 
 ## constants
 ## number of population members
-defaultNP <- 18
+defaultNP <- 14
 minNP <- 6
 maxNP <-30
 stepNP <- 4
 
 ## crossover probability
 defaultCR <- 0.5
-minCR <- 0.1
-maxCR <-0.9
-stepCR <- 0.2
+minCR <- 0.2
+maxCR <-0.8
+stepCR <- 0.3
 
 ## differenctial weigthing factor
 defaultF <- 0.8
-minF <- 0.2
-maxF <-1.7
-stepF <- 0.3
+minF <- 0.4
+maxF <-1.6
+stepF <- 0.4
 
 ## max iteration allowed
-defaultIter <- 100
-minIter <- 20
-maxIter <-180
-stepIter <- 40
+defaultIter <- 50
+minIter <-10
+maxIter <-90
+stepIter <- 20
 
 ## strategy used in optimization procedure
 defaultStrategy <- 2
