@@ -45,20 +45,6 @@ test=function()
 ## test of metaheuristic DEoptim
 testDEoptim=function()
 {
-  tmp<-minCR
-  while(tmp<=maxCR)
-  {
-    outDEoptim <-DEoptim(fitnessFunction, lower, upper, DEoptim.control(storepopfrom=0, NP=defaultNP, CR=tmp, F=defaultF, itermax= defaultIter, strategy=defaultStrategy))
-    drawDiagrams(outDEoptim, defaultNP)
-    tmp<-tmp+stepCR
-  }
-  tmp<-minF
-  while(tmp<=maxF)
-  {
-    outDEoptim <- DEoptim(fitnessFunction, lower, upper, DEoptim.control(storepopfrom=0, NP=defaultNP, CR=defaultCR, F=tmp, itermax= defaultIter, strategy=defaultStrategy))
-    drawDiagrams(outDEoptim, defaultNP)
-    tmp<-tmp+stepF
-  }
   tmp<-minIter
   while(tmp<=maxIter)
   {
