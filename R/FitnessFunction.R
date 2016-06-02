@@ -34,8 +34,8 @@ fitnessFunction <- function(x) {
   drawPlanetFlag <- FALSE
 
   secondsToRun <- (daysMax - day) * secondsPerDay
-  ##until we are still in solar system and we haven't reached endplanet and time hasn't run off
-  while(solarDist < solarDistMax && dist > endPlanet$radius && secondsToRun > 0) {
+  ##until we are still in solar system and time hasn't run off
+  while(solarDist < solarDistMax && secondsToRun > 0) {
     if(drawPlanetFlag){
       if(drawIndex==0){
         drawIndex<-3
